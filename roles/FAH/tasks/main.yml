@@ -134,7 +134,7 @@
     domainname: shire.loc
     state: started
     cleanup: yes
-    cpu_shares: "{{fah.container.cpu.shares}}"
+    cpu_shares: "{{fah.docker.container.cpu.shares}}"
 #    networks: 
 #      - name: bridge
     ports: 

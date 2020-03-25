@@ -38,3 +38,37 @@ You can enter your F@H details (username,team id, passkey) in ansible defaults f
 ```bash
 ansible-playbook playbook-FAH.yaml --tags run
 ```
+
+This will create the docker image and starts a container of it.
+The image is based on centos v 7.7.1908
+dockerfile and config.xml (for the FAHClient) are dynamicly templated by ansible during the build process of the image.
+
+## build and archive
+
+It is also possible to only build, or build and archive the docker image.
+Archiving is usefull when you want to use the same image on other docker instances.
+I have it also running on a Synology DSM.
+
+To only build the image
+
+```bash
+ansible-playbook playbook-FAH.yaml --tags build
+```
+
+To only archive the image
+
+```bash
+ansible-playbook playbook-FAH.yaml --tags archive
+```
+
+Importing an running the archived image on another docker instance
+
+```bash
+docker load < (name of archive).tar
+docker run -d --name FAH -p 7396:7396/tcp -p 36330:36330/tcp (name of imported docker image)
+```
+
+## Todo
+
+- more documentation
+- testing other container OSes

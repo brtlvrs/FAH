@@ -32,3 +32,5 @@ fah:
       ipv4: "{{ansible_eth0.ipv4.address}}" #-- this is the ipv4 address of the host where docker is running
       control_port: "36330" #"36330" #-- default for Folding@Home client FAHClient is 36330
       web_port: "7396" #"7396"  #-- default for Folding@Home client FAHClient 7396
+      cpu:
+        shares:  "768" #-- default is 1024

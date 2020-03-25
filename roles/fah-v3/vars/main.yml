@@ -1,0 +1,2 @@
+---
+build_folder: "{{root_location_docker_build}}/{{fah.name}}"

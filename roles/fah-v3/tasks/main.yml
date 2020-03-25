@@ -1,0 +1,172 @@
+---
+#
+#  tags
+#
+#  rebuildAndRun    Rebuild docker image and run container.
+#  rm_container     Remove container.
+#  rm_image         Removes image and container. It cannot remove the image while the container is present.
+#  stop             stop running the container
+#  build            [default] build the image. (whill be used when no tag is given)
+#  buildAndRun      build the image and run the container
+#  run              run the container
+#  buildAndArchive  build the image and create an archive .tar file
+#  archive          Archive the image to an .tar file
+#
+
+#-- 
+- name: display custom variables
+  #-- debug task to display custom created variables
+  tags:
+  - always
+  debug:
+    var: "{{ item }}"
+    verbosity: 1
+  loop:
+  - build_folder
+  - fah
+
+- name: "find Folding@Home container: {{fah.name}}"
+  #-- Check if Folding@Home container exists
+  tags:
+    - rebuildAndRun
+    - never #only run task when tags are explicity given 
+    - rm_container
+    - rm_image
+    - stop
+  docker_container_info:
+    name: "{{fah.name}}"
+  register: fah_container
+
+- name: "stop Folding@Home container: {{fah.name}}"
+  tags:
+    - never #only run task when tags are explicity given 
+    - rm_container
+    - rm_image
+    - stop
+    - rebuildAndRun
+  docker_container:
+    name: "{{fah.name}}"
+    state: stopped
+  when: fah_container.exists
+
+- name: "remove Folding@Home container: {{fah.name}}"
+  tags:
+    - never #only run task when tags are explicity given 
+    - rm_container
+    - rm_image
+    - rebuildAndRun
+  when: fah_container.exists
+  docker_container:
+    name: "{{fah.name}}"
+    state: absent
+
+- name: "remove Folding@Home docker image: {{fah.name}}:{{fah.tag}}" 
+  tags:
+    - never #only run task when tags are explicity given 
+    - rm_image
+    - rebuildAndRun
+  docker_image:
+    name: "{{fah.name}}" 
+    tag: "{{fah.tag}}" 
+    state: absent
+
+
+- name: check build folder
+  tags:
+    - never
+    - build
+    - buildAndRun 
+    - buildAndArchive
+  file:
+    path: "{{build_folder}}"
+    state: directory
+    mode: '0755'
+
+
+- name: bugfix 'invalid selinux context' - create config.xml
+  tags:
+    - build
+    - buildAndRun
+    - buildAndArchive
+    - rebuildAndRun
+  file:
+    path:  "{{build_folder}}/config.xml"
+    state: touch
+
+- name: templating build content
+  tags:
+    - buildAndRun
+    - buildAndArchive
+    - build
+    - rebuildAndRun
+  template:
+    src: "{{item}}.j2"
+    dest: "{{build_folder}}/{{item}}"
+  loop:
+    - config.xml
+    - dockerfile
+
+
+- name: "build Folding@Home docker image: {{fah.name}}:{{fah.tag}}" 
+  tags:
+    - build
+    - buildAndRun
+    - buildAndArchive
+    - rebuildAndRun
+  docker_image:
+    build:
+      pull: "false"
+      path: "{{build_folder}}"
+    source: build
+    name: "{{fah.name}}" 
+    tag: "{{fah.tag}}" 
+    push: false
+
+- name: "run Folding@home container: {{fah.name}} from image: {{fah.name}}:{{fah.tag}}" 
+  tags:
+    - never
+    - buildAndRun
+    - run
+    - rebuildAndRun
+  docker_container:
+    name: "{{fah.name}}"
+    image: "{{fah.name}}:{{fah.tag}}"
+    domainname: shire.loc
+    state: started
+    cleanup: yes
+#    networks: 
+#      - name: bridge
+    ports: 
+      - "{{fah.docker.container.ipv4}}:{{fah.docker.container.web_port}}:7396/tcp"
+      - "{{fah.docker.container.ipv4}}:{{fah.docker.container.control_port}}:36330/tcp"
+    restart_policy: "unless-stopped"
+    volumes:
+      - "fahclient:/var/lib/fahclient"
+
+- name: "create archiving location: {{fah.docker.image.archivepath}}"
+  tags:
+    - never
+    - archive 
+    - buildAndArchive
+  file:
+    path: "{{fah.docker.image.archivepath}}"
+    state: directory
+    mode: '0755'
+
+- name: "Archive / export dockerimage to: {{fah.docker.image.archivepath}}/{{fah.name}}-{{fah.tag}}.tar"
+  tags:
+    - never
+    - archive 
+    - buildAndArchive
+  docker_image:
+    name: "{{fah.name}}"
+    source: local  
+    tag: "{{fah.tag}}"
+    archive_path: "{{fah.docker.image.archivepath}}/{{fah.name}}-{{fah.tag}}.tar"
+
+- name: Remove build folder and its content
+  tags:
+    - always
+  file:
+    path:  "{{playbook_dir}}/build"
+    state: absent

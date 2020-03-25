@@ -1,0 +1,34 @@
+---
+#-- 
+_name: "fah-brtlvrs"
+_version: v7.5.1.1-cos-volume
+_build: "0.2"
+
+#-- docker volume, build and archive locations on host
+root_location_docker_build: "{{playbook_dir}}/build" # build folder is a temporary folder that exists during execution of the playbook.   
+root_location_docker_archive: "{{playbook_dir}}/archive" #-- root folder for archiving of docker images
+
+#-- Configuration parameters  to run, build and/or archive F@H container / image
+fah:
+  name: "{{_name}}.{{_version}}"
+  tag: "{{_build}}"
+  config: #-- settings for the config.xml file
+    path: "{{root_location_docker_build}}/{{_name}}/config.xml"
+    team: 246361" #-- your Folding@Home team number, use "0" if you're not part a a team (yet)
+    user: "brtlvrs" #-- your username for Folding@Home
+    passkey: 7ce465c5bcaf2e327ce465c5bcaf2e32"  #-- your passkey for Folding@Home
+    fold_anon: "false" 
+    gpu: "false"
+    power: medium #-- Options: light, medium or full
+    allow: "0.0.0.0/0"
+    web_allow: "0.0.0.0/0"
+    command_allow_no_pass: "0.0.0.0/0"
+    smp: "true"
+  docker: #-- settings for the docker commands
+    image: #-- docker build settings
+      dockerfile: "{{root_location_docker_build}}"
+      archivepath: "{{root_location_docker_archive}}/{{_name}}"
+    container: #-- docker run settings
+      ipv4: "{{ansible_eth0.ipv4.address}}" #-- this is the ipv4 address of the host where docker is running
+      control_port: "36330" #"36330" #-- default for Folding@Home client FAHClient is 36330
+      web_port: "7396" #"7396"  #-- default for Folding@Home client FAHClient 7396

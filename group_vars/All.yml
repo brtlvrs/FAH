@@ -1,0 +1,3 @@
+gv_root_location_docker_volume: /data/docker_volumes
+gv_root_location_docker_build: /mnt/synotabitha/docker/build
+gv_root_location_docker_archive: /mnt/synotabitha/docker/images

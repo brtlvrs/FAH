@@ -1,0 +1,33 @@
+# Ansible generated dockerfile for Folding@Home
+
+FROM centos:7.7.1908
+
+WORKDIR /root
+
+RUN yum -y update && yum -y upgrade
+RUN yum -y install \
+        wget \
+        openssl-devel \
+        bzip2 &&\
+    yum -y clean all
+
+RUN wget https://download.foldingathome.org/releases/public/release/fahclient/centos-6.7-64bit/v7.5/fahclient-7.5.1-1.x86_64.rpm &&\
+    wget https://download.foldingathome.org/releases/public/release/fahcontrol/centos-6.7-64bit/v7.5/fahcontrol-7.5.1-1.noarch.rpm &&\
+    wget https://download.foldingathome.org/releases/public/release/fahviewer/centos-6.7-64bit/v7.5/fahviewer-7.5.1-1.x86_64.rpm
+
+RUN rpm -i --nodeps *.rpm
+
+RUN yum -y clean all && \
+    rm -rf /var/cache/yum && \
+    rm -f fah*.rpm
+
+VOLUME /var/lib/fahclient
+
+WORKDIR /var/lib/fahclient
+
+EXPOSE 7396 36330 
+
+ADD --chown=fahclient:root config.xml /var/lib/fahclient/config.xml
+
+ENTRYPOINT ["/usr/bin/FAHClient"]
+CMD ["--config=/var/lib/fahclient/config.xml"]

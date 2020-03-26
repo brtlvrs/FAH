@@ -84,6 +84,7 @@ Tags are used to run a selection of the tasks.
 
 |tag|stop<br>container|remove<br>container|remove<br>container&<br>volume|remove<br>image|build<br>image|run<br>container|Archive<br>image|Remove<br>build<br>folder|
 |---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+||
 |run<br>(default)||x||x|x|x||x
 |run_only||||||x||x
 |clean_run|x||x|x|x|x||x

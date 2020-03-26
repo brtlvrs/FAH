@@ -46,22 +46,29 @@ This will create the docker image and starts a container of it.
 The image is based on centos v 7.7.1908
 dockerfile and config.xml (for the FAHClient) are dynamicly templated by ansible during the build process of the image.
 
+To only run the image
+
+```bash
+ansible-playbook playbook-FAH.yaml --tags run_only
+```
+
 ## build and archive
 
 It is also possible to only build, or build and archive the docker image.
 Archiving is usefull when you want to use the same image on other docker instances.
 I have it also running on a Synology DSM.
 
-To only build the image
+To only build the image.
+The container will be stopped and removed before the image is rebuild.
 
 ```bash
 ansible-playbook playbook-FAH.yaml --tags build
 ```
 
-To only archive the image
+To only archive the image.
 
 ```bash
-ansible-playbook playbook-FAH.yaml --tags archive
+ansible-playbook playbook-FAH.yaml --tags archive_only
 ```
 
 Importing an running the archived image on another docker instance
@@ -71,7 +78,26 @@ docker load < (name of archive).tar
 docker run -d --name FAH -p 7396:7396/tcp -p 36330:36330/tcp (name of imported docker image)
 ```
 
+## tags
+
+Tags are used to run a selection of the tasks.
+
+|tag|stop<br>container|remove<br>container|remove<br>container&<br>volume|remove<br>image|build<br>image|run<br>container|Archive<br>image|Remove<br>build<br>folder|
+|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+|run<br>(default)||x||x|x|x||x
+|run_only||||||x||x
+|clean_run|x||x|x|x|x||x
+|stop|x|||||||x
+||
+|build|x|x||x|x|||x
+|build_only||||x|x|||x
+||
+|archive||x||x|x||x|x
+|archive_only|||||||x|x
+
 ## Todo
 
 - more documentation
 - testing other container OSes
+  - photonOS
+  - Alpine

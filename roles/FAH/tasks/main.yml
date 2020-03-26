@@ -2,15 +2,17 @@
 #
 #  tags
 #
-#  rebuildAndRun    Rebuild docker image and run container.
-#  rm_container     Remove container.
-#  rm_image         Removes image and container. It cannot remove the image while the container is present.
+
 #  stop             stop running the container
-#  build            [default] build the image. (whill be used when no tag is given)
-#  buildAndRun      build the image and run the container
-#  run              run the container
-#  buildAndArchive  build the image and create an archive .tar file
-#  archive          Archive the image to an .tar file
+#  run_clean        Rebuild docker image, remove container with volume and run container
+#  rm_container     Remove container.
+#  rm_image         Removes image and container.
+#  build            build the image. (whill be used when no tag is given)
+#  run              [default], (re)build the image run the container, using exisiting volume, if present
+#  archive          (re)build the image and archive it to an .tar file
+#  archive_only     only run archive tasks
+#  build_only       only run build tasks. Container will be stopped and removed.
+#  run_only         Only run container.
 #
 
 #-- 
@@ -28,22 +30,24 @@
 - name: "find Folding@Home container: {{fah.name}}"
   #-- Check if Folding@Home container exists
   tags:
-    - rebuildAndRun
-    - never #only run task when tags are explicity given 
+    - run
+    - rm_all
     - rm_container
     - rm_image
     - stop
+    - clean_run
   docker_container_info:
     name: "{{fah.name}}"
   register: fah_container
 
 - name: "stop Folding@Home container: {{fah.name}}"
   tags:
-    - never #only run task when tags are explicity given 
     - rm_container
+    - rm_all
     - rm_image
+    - rm_all
     - stop
-    - rebuildAndRun
+    - clean_run
   docker_container:
     name: "{{fah.name}}"
     state: stopped
@@ -51,20 +55,34 @@
 
 - name: "remove Folding@Home container: {{fah.name}}"
   tags:
-    - never #only run task when tags are explicity given 
     - rm_container
     - rm_image
-    - rebuildAndRun
+    - build
+    - run
   when: fah_container.exists
   docker_container:
     name: "{{fah.name}}"
     state: absent
 
-- name: "remove Folding@Home docker image: {{fah.name}}:{{fah.tag}}" 
+- name: "remove Folding@Home container incl. volume: {{fah.name}}"
   tags:
     - never #only run task when tags are explicity given 
+    - rm_all
+    - clean_run
+  when: fah_container.exists
+  docker_container:
+    name: "{{fah.name}}"
+    state: absent
+    keep_volumes: "no"
+
+- name: "remove Folding@Home docker image: {{fah.name}}:{{fah.tag}}" 
+  tags:
     - rm_image
-    - rebuildAndRun
+    - build_only
+    - run
+    - buid
+    - archive
+    - rm_all
   docker_image:
     name: "{{fah.name}}" 
     tag: "{{fah.tag}}" 
@@ -74,9 +92,10 @@
 - name: check build folder
   tags:
     - never
+    - build_only
     - build
-    - buildAndRun 
-    - buildAndArchive
+    - run 
+    - archive
   file:
     path: "{{build_folder}}"
     state: directory
@@ -86,19 +105,19 @@
 - name: bugfix 'invalid selinux context' - create config.xml
   tags:
     - build
-    - buildAndRun
-    - buildAndArchive
-    - rebuildAndRun
+    - build_only
+    - run
+    - archivve
   file:
     path:  "{{build_folder}}/config.xml"
     state: touch
 
 - name: templating build content
   tags:
-    - buildAndRun
-    - buildAndArchive
+    - Archive
+    - build_only
     - build
-    - rebuildAndRun
+    - run
   template:
     src: "{{item}}.j2"
     dest: "{{build_folder}}/{{item}}"
@@ -110,9 +129,9 @@
 - name: "build Folding@Home docker image: {{fah.name}}:{{fah.tag}}" 
   tags:
     - build
-    - buildAndRun
-    - buildAndArchive
-    - rebuildAndRun
+    - build_only
+    - run
+    - Archive
   docker_image:
     build:
       pull: "false"
@@ -124,10 +143,9 @@
 
 - name: "run Folding@home container: {{fah.name}} from image: {{fah.name}}:{{fah.tag}}" 
   tags:
-    - never
-    - buildAndRun
     - run
-    - rebuildAndRun
+    - run_only
+    - clean_run
   docker_container:
     name: "{{fah.name}}"
     image: "{{fah.name}}:{{fah.tag}}"
@@ -148,7 +166,7 @@
   tags:
     - never
     - archive 
-    - buildAndArchive
+    - archive_only
   file:
     path: "{{fah.docker.image.archivepath}}"
     state: directory
@@ -158,7 +176,7 @@
   tags:
     - never
     - archive 
-    - buildAndArchive
+    - archive_only
   docker_image:
     name: "{{fah.name}}"
     source: local  

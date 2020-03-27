@@ -36,7 +36,7 @@ Details:
 ## Run
 
 The playbook will create a docker container from scratch and run it.
-You can enter your F@H details (username,team id, passkey) in ansible defaults file at [roles/FAH/defaults/main.yaml]
+You can enter your F@H details (username,team id, passkey) in ansible defaults file at [roles/FAH/defaults/main.yaml](roles/FAH/defaults/main.yaml)
 
 ```bash
 ansible-playbook playbook-FAH.yaml --tags run

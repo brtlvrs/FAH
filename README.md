@@ -1,6 +1,6 @@
 # Brtlvrs Folding @ Home Ansible project
 
-|version| 0.2 | MIT license|Copyright (c) 2020 Bart Lievers|[blog](https://vblog.bartlievers.nl)|
+|version| 0.2 | [MIT license](LICENSE)|Copyright (c) 2020 Bart Lievers|[blog](https://vblog.bartlievers.nl)|
 |---|---|---|---|---|
 
 This repository contains my approach for building, maintaining an running a Folding @ Home docker container.
@@ -36,7 +36,7 @@ Details:
 ## Run
 
 The playbook will create a docker container from scratch and run it.
-You can enter your F@H details (username,team id, passkey) in ansible defaults file at roles/FAH/defaults/main.yaml
+You can enter your F@H details (username,team id, passkey) in ansible defaults file at [roles/FAH/defaults/main.yaml](roles/FAH/defaults/main.yaml)
 
 ```bash
 ansible-playbook playbook-FAH.yaml --tags run

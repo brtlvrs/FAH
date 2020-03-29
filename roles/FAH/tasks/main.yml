@@ -24,7 +24,6 @@
     var: "{{ item }}"
     verbosity: 1
   loop:
-  - build_folder
   - fah
 
 - name: "find Folding@Home container: {{fah.name}}"
@@ -97,7 +96,7 @@
     - run 
     - archive
   file:
-    path: "{{build_folder}}"
+    path: "{{fah.image.build.path}}"
     state: directory
     mode: '0755'
 
@@ -109,7 +108,7 @@
     - run
     - archivve
   file:
-    path:  "{{build_folder}}/config.xml"
+    path:  "{{fah.image.build.path}}/config.xml"
     state: touch
 
 - name: templating build content
@@ -120,7 +119,7 @@
     - run
   template:
     src: "{{item}}.j2"
-    dest: "{{build_folder}}/{{item}}"
+    dest: "{{fah.image.build.path}}/{{item}}"
   loop:
     - config.xml
     - dockerfile
@@ -135,7 +134,7 @@
   docker_image:
     build:
       pull: "false"
-      path: "{{build_folder}}"
+      path: "{{fah.image.build.path}}"
     source: build
     name: "{{fah.name}}" 
     tag: "{{fah.tag}}" 
@@ -162,17 +161,17 @@
     volumes:
       - "fahclient:/var/lib/fahclient"
 
-- name: "create archiving location: {{fah.docker.image.archivepath}}"
+- name: "create archiving location: {{fah.docker.image.archive.path}}"
   tags:
     - never
     - archive 
     - archive_only
   file:
-    path: "{{fah.docker.image.archivepath}}"
+    path: "{{fah.docker.image.archive.path}}"
     state: directory
     mode: '0755'
 
-- name: "Archive / export dockerimage to: {{fah.docker.image.archivepath}}/{{fah.name}}-{{fah.tag}}.tar"
+- name: "Archive / export dockerimage to: {{fah.docker.image.archive.path}}/{{fah.name}}-{{fah.tag}}.tar"
   tags:
     - never
     - archive 
@@ -181,7 +180,7 @@
     name: "{{fah.name}}"
     source: local  
     tag: "{{fah.tag}}"
-    archive_path: "{{fah.docker.image.archivepath}}/{{fah.name}}-{{fah.tag}}.tar"
+    archive_path: "{{fah.docker.image.archive.path}}/{{fah.name}}-{{fah.tag}}.tar"
 
 - name: Remove build folder and its content
   tags:

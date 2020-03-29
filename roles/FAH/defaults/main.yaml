@@ -4,15 +4,13 @@ _name: "fah-brtlvrs"
 _version: v7.5.1.1-cos-volume
 _build: "0.2"
 
-#-- docker volume, build and archive locations on host
-root_location_docker_build: "{{playbook_dir}}/build" # build folder is a temporary folder that exists during execution of the playbook.   
-root_location_docker_archive: "{{playbook_dir}}/archive" #-- root folder for archiving of docker images
+_obj: 
 
 #-- Configuration parameters  to run, build and/or archive F@H container / image
 fah:
   name: "{{_name}}.{{_version}}"
   tag: "{{_build}}"
-  config: #-- settings for the config.xml file
+  config: #-- settings for the config.xml file of FAHClient
     path: "{{root_location_docker_build}}/{{_name}}/config.xml"
     team: 246361" #-- your Folding@Home team number, use "0" if you're not part a a team (yet)
     user: "brtlvrs" #-- your username for Folding@Home
@@ -27,7 +25,10 @@ fah:
   docker: #-- settings for the docker commands
     image: #-- docker build settings
       dockerfile: "{{root_location_docker_build}}"
-      archivepath: "{{root_location_docker_archive}}/{{_name}}"
+      build:
+        path: "{{playbook_dir}}/build" #--path to place dockerfile and build image from
+      archive:
+        path: "{{playbook_dir}}/archive/{{_name}}" #-- path to archive image
     container: #-- docker run settings
       ipv4: "{{ansible_eth0.ipv4.address}}" #-- this is the ipv4 address of the host where docker is running
       control_port: "36330" #"36330" #-- default for Folding@Home client FAHClient is 36330

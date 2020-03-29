@@ -1,18 +1,7 @@
 ---
 #
-#  tags
-#
-
-#  stop             stop running the container
-#  run_clean        Rebuild docker image, remove container with volume and run container
-#  rm_container     Remove container.
-#  rm_image         Removes image and container.
-#  build            build the image. (whill be used when no tag is given)
-#  run              [default], (re)build the image run the container, using exisiting volume, if present
-#  archive          (re)build the image and archive it to an .tar file
-#  archive_only     only run archive tasks
-#  build_only       only run build tasks. Container will be stopped and removed.
-#  run_only         Only run container.
+# for the function of tags run
+# >ansible-playbook playbook-FAH.yaml --tags help 
 #
 
 #-- 

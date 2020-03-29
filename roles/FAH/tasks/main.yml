@@ -30,7 +30,6 @@
   #-- Check if Folding@Home container exists
   tags:
     - run
-    - rm_all
     - rm_container
     - rm_image
     - stop
@@ -42,9 +41,7 @@
 - name: "stop Folding@Home container: {{fah.name}}"
   tags:
     - rm_container
-    - rm_all
     - rm_image
-    - rm_all
     - stop
     - clean_run
   docker_container:
@@ -77,7 +74,6 @@
 - name: "remove Folding@Home docker image: {{fah.name}}:{{fah.tag}}" 
   tags:
     - rm_image
-    - build_only
     - run
     - buid
     - archive
@@ -91,12 +87,11 @@
 - name: check build folder
   tags:
     - never
-    - build_only
     - build
     - run 
     - archive
   file:
-    path: "{{fah.image.build.path}}"
+    path: "{{fah.docker.image.build.path}}"
     state: directory
     mode: '0755'
 
@@ -104,22 +99,20 @@
 - name: bugfix 'invalid selinux context' - create config.xml
   tags:
     - build
-    - build_only
     - run
     - archivve
   file:
-    path:  "{{fah.image.build.path}}/config.xml"
+    path:  "{{fah.docker.image.build.path}}/config.xml"
     state: touch
 
 - name: templating build content
   tags:
     - Archive
-    - build_only
     - build
     - run
   template:
     src: "{{item}}.j2"
-    dest: "{{fah.image.build.path}}/{{item}}"
+    dest: "{{fah.docker.image.build.path}}/{{item}}"
   loop:
     - config.xml
     - dockerfile
@@ -128,13 +121,12 @@
 - name: "build Folding@Home docker image: {{fah.name}}:{{fah.tag}}" 
   tags:
     - build
-    - build_only
     - run
     - Archive
   docker_image:
     build:
       pull: "false"
-      path: "{{fah.image.build.path}}"
+      path: "{{fah.docker.image.build.path}}"
     source: build
     name: "{{fah.name}}" 
     tag: "{{fah.tag}}" 
@@ -188,3 +180,11 @@
   file:
     path:  "{{playbook_dir}}/build"
     state: absent
+
+- name: help
+  tags:
+    - never
+    - help
+  debug:
+    var:
+      help

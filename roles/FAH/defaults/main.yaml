@@ -1,17 +1,18 @@
 ---
-#-- 
-_name: "fah-brtlvrs"
-_version: v7.5.1.1-cos-volume
-_build: "0.2"
 
-_obj: 
+#-- some 'global rule variables'
+_rule:
+  name: "fah-brtlvrs"
+  version: v7.5.1.1-cos-volume
+  build: "0.2"
+  build_path: "{{playbook_dir}}/build"
 
 #-- Configuration parameters  to run, build and/or archive F@H container / image
 fah:
-  name: "{{_name}}.{{_version}}"
-  tag: "{{_build}}"
+  name: "{{_rule.name}}.{{_rule.version}}"
+  tag: "{{_rule.build}}"
   config: #-- settings for the config.xml file of FAHClient
-    path: "{{root_location_docker_build}}/{{_name}}/config.xml"
+    path: "{{_rule.build_path}}/{{_rule.name}}/config.xml"
     team: 246361" #-- your Folding@Home team number, use "0" if you're not part a a team (yet)
     user: "brtlvrs" #-- your username for Folding@Home
     passkey: 7ce465c5bcaf2e327ce465c5bcaf2e32"  #-- your passkey for Folding@Home
@@ -24,14 +25,26 @@ fah:
     smp: "true"
   docker: #-- settings for the docker commands
     image: #-- docker build settings
-      dockerfile: "{{root_location_docker_build}}"
+      dockerfile: "{{_rule.build_path}}"
       build:
         path: "{{playbook_dir}}/build" #--path to place dockerfile and build image from
       archive:
-        path: "{{playbook_dir}}/archive/{{_name}}" #-- path to archive image
+        path: "{{playbook_dir}}/archive/{{_rule.name}}" #-- path to archive image
     container: #-- docker run settings
       ipv4: "{{ansible_eth0.ipv4.address}}" #-- this is the ipv4 address of the host where docker is running
       control_port: "36330" #"36330" #-- default for Folding@Home client FAHClient is 36330
       web_port: "7396" #"7396"  #-- default for Folding@Home client FAHClient 7396
       cpu:
         shares: "768" #-- default is 1024
+
+help:
+    tags_explenation:
+      rm_container : remove docker container
+      rm_image     : remove docker container and image
+      build        : (re)build image, remove container, remove image then (re)build image
+      run          : (re)build container, remove container, run container (data volume is not removed)
+      clean_run    : remove container with its volume and run container
+      run_only     : don't rebuild image, only (re)run container
+      stop         : stop running container
+      archive      : archive image to .tar, first (re)build image, will not work if container is present
+      archive_only : archive image to .tar

@@ -1,18 +1,7 @@
 ---
 #
-#  tags
-#
-
-#  stop             stop running the container
-#  run_clean        Rebuild docker image, remove container with volume and run container
-#  rm_container     Remove container.
-#  rm_image         Removes image and container.
-#  build            build the image. (whill be used when no tag is given)
-#  run              [default], (re)build the image run the container, using exisiting volume, if present
-#  archive          (re)build the image and archive it to an .tar file
-#  archive_only     only run archive tasks
-#  build_only       only run build tasks. Container will be stopped and removed.
-#  run_only         Only run container.
+# for the function of tags run
+# >ansible-playbook playbook-FAH.yaml --tags help 
 #
 
 #-- 
@@ -24,14 +13,12 @@
     var: "{{ item }}"
     verbosity: 1
   loop:
-  - build_folder
   - fah
 
 - name: "find Folding@Home container: {{fah.name}}"
   #-- Check if Folding@Home container exists
   tags:
     - run
-    - rm_all
     - rm_container
     - rm_image
     - stop
@@ -43,9 +30,7 @@
 - name: "stop Folding@Home container: {{fah.name}}"
   tags:
     - rm_container
-    - rm_all
     - rm_image
-    - rm_all
     - stop
     - clean_run
   docker_container:
@@ -78,7 +63,6 @@
 - name: "remove Folding@Home docker image: {{fah.name}}:{{fah.tag}}" 
   tags:
     - rm_image
-    - build_only
     - run
     - buid
     - archive
@@ -92,12 +76,11 @@
 - name: check build folder
   tags:
     - never
-    - build_only
     - build
     - run 
     - archive
   file:
-    path: "{{build_folder}}"
+    path: "{{fah.docker.image.build.path}}"
     state: directory
     mode: '0755'
 
@@ -105,22 +88,20 @@
 - name: bugfix 'invalid selinux context' - create config.xml
   tags:
     - build
-    - build_only
     - run
     - archivve
   file:
-    path:  "{{build_folder}}/config.xml"
+    path:  "{{fah.docker.image.build.path}}/config.xml"
     state: touch
 
 - name: templating build content
   tags:
     - Archive
-    - build_only
     - build
     - run
   template:
     src: "{{item}}.j2"
-    dest: "{{build_folder}}/{{item}}"
+    dest: "{{fah.docker.image.build.path}}/{{item}}"
   loop:
     - config.xml
     - dockerfile
@@ -129,13 +110,12 @@
 - name: "build Folding@Home docker image: {{fah.name}}:{{fah.tag}}" 
   tags:
     - build
-    - build_only
     - run
     - Archive
   docker_image:
     build:
       pull: "false"
-      path: "{{build_folder}}"
+      path: "{{fah.docker.image.build.path}}"
     source: build
     name: "{{fah.name}}" 
     tag: "{{fah.tag}}" 
@@ -162,17 +142,17 @@
     volumes:
       - "fahclient:/var/lib/fahclient"
 
-- name: "create archiving location: {{fah.docker.image.archivepath}}"
+- name: "create archiving location: {{fah.docker.image.archive.path}}"
   tags:
     - never
     - archive 
     - archive_only
   file:
-    path: "{{fah.docker.image.archivepath}}"
+    path: "{{fah.docker.image.archive.path}}"
     state: directory
     mode: '0755'
 
-- name: "Archive / export dockerimage to: {{fah.docker.image.archivepath}}/{{fah.name}}-{{fah.tag}}.tar"
+- name: "Archive / export dockerimage to: {{fah.docker.image.archive.path}}/{{fah.name}}-{{fah.tag}}.tar"
   tags:
     - never
     - archive 
@@ -181,7 +161,7 @@
     name: "{{fah.name}}"
     source: local  
     tag: "{{fah.tag}}"
-    archive_path: "{{fah.docker.image.archivepath}}/{{fah.name}}-{{fah.tag}}.tar"
+    archive_path: "{{fah.docker.image.archive.path}}/{{fah.name}}-{{fah.tag}}.tar"
 
 - name: Remove build folder and its content
   tags:
@@ -189,3 +169,11 @@
   file:
     path:  "{{playbook_dir}}/build"
     state: absent
+
+- name: help
+  tags:
+    - never
+    - help
+  debug:
+    var:
+      help

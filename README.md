@@ -81,6 +81,11 @@ docker run -d --name FAH -p 7396:7396/tcp -p 36330:36330/tcp (name of imported d
 ## tags
 
 Tags are used to run a selection of the tasks.
+Run below code, to display the functions of the tags
+
+```bash
+ansible-playbook playbook-FAH.yaml --tags help
+```
 
 |tag|stop<br>container|remove<br>container|remove<br>container&<br>volume|remove<br>image|build<br>image|run<br>container|Archive<br>image|Remove<br>build<br>folder|
 |---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
@@ -94,7 +99,6 @@ Tags are used to run a selection of the tasks.
 |build_only||||x|x|||x
 ||
 |archive||x||x|x||x|x
-|archive_only|||||||x|x
 
 ## Todo
 

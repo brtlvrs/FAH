@@ -66,7 +66,6 @@
     - rm_image
     - run
     - buid
-    - archive
     - rm_all
   docker_image:
     name: "{{fah.name}}" 
@@ -141,7 +140,7 @@
       - "{{fah.docker.container.ipv4}}:{{fah.docker.container.control_port}}:36330/tcp"
     restart_policy: "unless-stopped"
     volumes:
-      - "fahclient:/var/lib/fahclient"
+      - "{{fah.name}}:/opt/fahclient/"
 
 - name: "create archiving location: {{fah.docker.image.archive.path}}"
   tags:

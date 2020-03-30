@@ -22,6 +22,7 @@
     - rm_container
     - rm_image
     - stop
+    - build
     - clean_run
   docker_container_info:
     name: "{{fah.name}}"

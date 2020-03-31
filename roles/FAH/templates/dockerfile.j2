@@ -33,8 +33,8 @@ COPY --chown=folding:folding config.xml /opt/fahclient/config.xml
 USER folding
 WORKDIR /opt/fahclient
 
-EXPOSE 7396 # -- FAHClient web port
-EXPOSE 36330 #-- FAHClient control port
+#-- expose container ports 7396 (web) 36330 (control)
+EXPOSE 7396 36330
 
 ENTRYPOINT ["/opt/fahclient/FAHClient"]
 CMD ["--config=/opt/fahclient/config.xml"]

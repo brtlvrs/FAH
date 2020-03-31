@@ -1,3 +1,12 @@
+#  Folding@Home : https://download.foldingathome.org
+#
+#  dockerfile based on https://github.com/yurinnick/folding-at-home-docker/blob/master/Dockerfile
+#
+# addendum :
+#  - not using entrypoint.sh but used [ENTRYPOINT] and [CMD] instead
+#  - using fahclient config.xml instead enviromental variables in entrypoint.sh
+#  - config.xml is copied into image
+
 FROM debian:stable-slim
 
 ARG version="v7.5"

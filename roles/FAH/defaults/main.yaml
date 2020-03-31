@@ -3,8 +3,8 @@
 #-- some 'global rule variables'
 _rule:
   name: "fah-brtlvrs"
-  version: v7.5.1.1-cos-volume
-  build: "0.2"
+  version: v7.5.1.1-deb-volume
+  build: "0.3.1"
   build_path: "{{playbook_dir}}/build"
 
 #-- Configuration parameters  to run, build and/or archive F@H container / image
@@ -32,8 +32,8 @@ fah:
         path: "{{playbook_dir}}/archive/{{_rule.name}}" #-- path to archive image
     container: #-- docker run settings
       ipv4: "{{ansible_eth0.ipv4.address}}" #-- this is the ipv4 address of the host where docker is running
-      control_port: "36330" #"36330" #-- default for Folding@Home client FAHClient is 36330
-      web_port: "7396" #"7396"  #-- default for Folding@Home client FAHClient 7396
+      control_port: "36331" #"36330" #-- default for Folding@Home client FAHClient is 36330
+      web_port: "7397" #"7396"  #-- default for Folding@Home client FAHClient 7396
       cpu:
         shares: "768" #-- default is 1024
 

@@ -1,33 +1,40 @@
-# Ansible generated dockerfile for Folding@Home
+#  Folding@Home : https://download.foldingathome.org
+#
+#  dockerfile based on https://github.com/yurinnick/folding-at-home-docker/blob/master/Dockerfile
+#
+# addendum :
+#  - not using entrypoint.sh but used [ENTRYPOINT] and [CMD] instead
+#  - using fahclient config.xml instead enviromental variables in entrypoint.sh
+#  - config.xml is copied into image
 
-FROM centos:7.7.1908
+FROM debian:stable-slim
 
-WORKDIR /root
+ARG version="v7.5"
 
-RUN yum -y update && yum -y upgrade
-RUN yum -y install \
-        wget \
-        openssl-devel \
-        bzip2 &&\
-    yum -y clean all
+RUN useradd --system folding && \
+    mkdir -p /opt/fahclient/work && \
+    # download and untar
+    apt-get update -y && \
+    apt-get install -y wget bzip2 && \
+    wget https://download.foldingathome.org/releases/public/release/fahclient/debian-stable-64bit/${version}/latest.tar.bz2 -O /tmp/fahclient.tar.bz2 && \
+    tar -xjf /tmp/fahclient.tar.bz2 -C /opt/fahclient --strip-components=1 && \
+    # fix permissions
+    chown -R folding:folding /opt/fahclient && \
+    # cleanup
+    rm -rf /tmp/fahclient.tar.bz2 && \
+    apt-get purge -y wget bzip2 && \
+    apt-get clean autoclean && \
+    apt-get autoremove --yes && \
+    rm -rf /var/lib/apt/lists/*
 
-RUN wget https://download.foldingathome.org/releases/public/release/fahclient/centos-6.7-64bit/v7.5/fahclient-7.5.1-1.x86_64.rpm &&\
-    wget https://download.foldingathome.org/releases/public/release/fahcontrol/centos-6.7-64bit/v7.5/fahcontrol-7.5.1-1.noarch.rpm &&\
-    wget https://download.foldingathome.org/releases/public/release/fahviewer/centos-6.7-64bit/v7.5/fahviewer-7.5.1-1.x86_64.rpm
+#-- copy FAHCLient config.xml
+COPY --chown=folding:folding config.xml /opt/fahclient/config.xml
 
-RUN rpm -i --nodeps *.rpm
+USER folding
+WORKDIR /opt/fahclient
 
-RUN yum -y clean all && \
-    rm -rf /var/cache/yum && \
-    rm -f fah*.rpm
+#-- expose container ports 7396 (web) 36330 (control)
+EXPOSE 7396 36330
 
-VOLUME /var/lib/fahclient
-
-WORKDIR /var/lib/fahclient
-
-EXPOSE 7396 36330 
-
-ADD --chown=fahclient:root config.xml /var/lib/fahclient/config.xml
-
-ENTRYPOINT ["/usr/bin/FAHClient"]
-CMD ["--config=/var/lib/fahclient/config.xml"]
+ENTRYPOINT ["/opt/fahclient/FAHClient"]
+CMD ["--config=/opt/fahclient/config.xml"]

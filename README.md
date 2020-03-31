@@ -1,6 +1,6 @@
 # Brtlvrs Folding @ Home Ansible project
 
-|version| 0.2 | [MIT license](LICENSE)|Copyright (c) 2020 Bart Lievers|[blog](https://vblog.bartlievers.nl)|
+|version| 0.3 | [MIT license](LICENSE)|Copyright (c) 2020 Bart Lievers|[blog](https://vblog.bartlievers.nl)|
 |---|---|---|---|---|
 
 This repository contains my approach for building, maintaining an running a Folding @ Home docker container.
@@ -12,6 +12,15 @@ For information about Folding @ Home, please check their website at [foldingatho
 ## Goal
 
 To get some experience with Ansible, git, docker while helping a great intiative.
+
+## History
+
+|version|History|
+|---|---|
+|v0.3.1|small change to dockerfile
+|v0.3|moved from centOS to debian for smaller image (from 488 MB to 83 MB)
+|v0.2|centOS version with restructured Ansible rule
+|v0.1|no idea :-)
 
 ## My environment
 

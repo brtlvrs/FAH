@@ -27,15 +27,14 @@ RUN useradd --system folding && \
     apt-get autoremove --yes && \
     rm -rf /var/lib/apt/lists/*
 
+#-- copy FAHCLient config.xml
 COPY --chown=folding:folding config.xml /opt/fahclient/config.xml
-
-RUN chmod +x /opt/fahclient/config.xml
 
 USER folding
 WORKDIR /opt/fahclient
 
-EXPOSE 7396
-EXPOSE 36330
+EXPOSE 7396 # -- FAHClient web port
+EXPOSE 36330 #-- FAHClient control port
 
 ENTRYPOINT ["/opt/fahclient/FAHClient"]
 CMD ["--config=/opt/fahclient/config.xml"]

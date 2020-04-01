@@ -4,7 +4,7 @@
 _rule:
   name: "fah-brtlvrs"
   version: v7.5.1.1-deb-volume
-  build: "0.3.1"
+  build: "0.3.2"
   build_path: "{{playbook_dir}}/build"
 
 #-- Configuration parameters  to run, build and/or archive F@H container / image
@@ -13,9 +13,9 @@ fah:
   tag: "{{_rule.build}}"
   config: #-- settings for the config.xml file of FAHClient
     path: "{{_rule.build_path}}/{{_rule.name}}/config.xml"
-    team: 246361" #-- your Folding@Home team number, use "0" if you're not part a a team (yet)
+    team: "246361" #-- your Folding@Home team number, use "0" if you're not part a a team (yet)
     user: "brtlvrs" #-- your username for Folding@Home
-    passkey: 7ce465c5bcaf2e327ce465c5bcaf2e32"  #-- your passkey for Folding@Home
+    passkey: "7ce465c5bcaf2e327ce465c5bcaf2e32"  #-- your passkey for Folding@Home
     fold_anon: "false" 
     gpu: "false"
     power: medium #-- Options: light, medium or full
@@ -32,8 +32,8 @@ fah:
         path: "{{playbook_dir}}/archive/{{_rule.name}}" #-- path to archive image
     container: #-- docker run settings
       ipv4: "{{ansible_eth0.ipv4.address}}" #-- this is the ipv4 address of the host where docker is running
-      control_port: "36331" #"36330" #-- default for Folding@Home client FAHClient is 36330
-      web_port: "7397" #"7396"  #-- default for Folding@Home client FAHClient 7396
+      control_port: "36330" #"36330" #-- default for Folding@Home client FAHClient is 36330
+      web_port: "7396" #"7396"  #-- default for Folding@Home client FAHClient 7396
       cpu:
         shares: "768" #-- default is 1024
 

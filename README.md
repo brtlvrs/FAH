@@ -15,13 +15,13 @@ To get some experience with Ansible, git, docker while helping a great intiative
 
 ## History
 
-|version|History|
-|---|---|
-|0.3.2|type fixes in defaults/main.yaml|
-|0.3.1|small change to dockerfile
-|0.3|moved from centOS to debian for smaller image (from 488 MB to 83 MB)
-|0.2|centOS version with restructured Ansible rule
-|0.1|no idea :-)
+|version|FAH<br>version|History|
+|---|---|---|
+|0.3.2|7.5.1.1|type fixes in defaults/main.yaml|
+|0.3.1|7.5.1.1|small change to dockerfile
+|0.3|7.5.1.1|moved from centOS to debian for smaller image (from 488 MB to 83 MB)
+|0.2|7.5.1.1|centOS version with restructured Ansible rule
+|0.1||no idea :-)
 
 ## My environment
 

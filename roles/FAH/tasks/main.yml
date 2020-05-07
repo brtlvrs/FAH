@@ -15,7 +15,7 @@
   loop:
   - fah
 
-- name: "find Folding@Home container: {{fah.name}}"
+- name: "find Folding@Home container: {{fah.fullname}}"
   #-- Check if Folding@Home container exists
   tags:
     - run
@@ -25,21 +25,21 @@
     - build
     - clean_run
   docker_container_info:
-    name: "{{fah.name}}"
+    name: "{{fah.fullname}}"
   register: fah_container
 
-- name: "stop Folding@Home container: {{fah.name}}"
+- name: "stop Folding@Home container: {{fah.fullname}}"
   tags:
     - rm_container
     - rm_image
     - stop
     - clean_run
   docker_container:
-    name: "{{fah.name}}"
+    name: "{{fah.fullname}}"
     state: stopped
   when: fah_container.exists
 
-- name: "remove Folding@Home container: {{fah.name}}"
+- name: "remove Folding@Home container: {{fah.fullname}}"
   tags:
     - rm_container
     - rm_image
@@ -47,28 +47,28 @@
     - run
   when: fah_container.exists
   docker_container:
-    name: "{{fah.name}}"
+    name: "{{fah.fullname}}"
     state: absent
 
-- name: "remove Folding@Home container incl. volume: {{fah.name}}"
+- name: "remove Folding@Home container incl. volume: {{fah.fullname}}"
   tags:
     - never #only run task when tags are explicity given 
     - rm_all
     - clean_run
   when: fah_container.exists
   docker_container:
-    name: "{{fah.name}}"
+    name: "{{fah.fullname}}"
     state: absent
     keep_volumes: "no"
 
-- name: "remove Folding@Home docker image: {{fah.name}}:{{fah.tag}}" 
+- name: "remove Folding@Home docker image: {{fah.fullname}}:{{fah.tag}}" 
   tags:
     - rm_image
     - run
     - buid
     - rm_all
   docker_image:
-    name: "{{fah.name}}" 
+    name: "{{fah.fullname}}" 
     tag: "{{fah.tag}}" 
     state: absent
 
@@ -107,7 +107,7 @@
     - dockerfile
 
 
-- name: "build Folding@Home docker image: {{fah.name}}:{{fah.tag}}" 
+- name: "build Folding@Home docker image: {{fah.fullname}}:{{fah.tag}}" 
   tags:
     - build
     - run
@@ -117,18 +117,18 @@
       pull: "false"
       path: "{{fah.docker.image.build.path}}"
     source: build
-    name: "{{fah.name}}" 
+    name: "{{fah.fullname}}" 
     tag: "{{fah.tag}}" 
     push: false
 
-- name: "run Folding@home container: {{fah.name}} from image: {{fah.name}}:{{fah.tag}}" 
+- name: "run Folding@home container: {{fah.fullname}} from image: {{fah.fullname}}:{{fah.tag}}" 
   tags:
     - run
     - run_only
     - clean_run
   docker_container:
-    name: "{{fah.name}}"
-    image: "{{fah.name}}:{{fah.tag}}"
+    name: "{{fah.fullname}}"
+    image: "{{fah.fullname}}:{{fah.tag}}"
     domainname: shire.loc
     state: started
     cleanup: yes
@@ -142,7 +142,8 @@
       - "{{fah.docker.container.ipv4}}:{{fah.docker.container.control_port}}:36330/tcp"
     restart_policy: "unless-stopped"
     volumes:
-      - "{{fah.name}}:/opt/fahclient/"
+      - "{{fah.fullname}}:/opt/fahclient/"
+      - "{{fah.name}}_work:/opt/fahclient/work/"
 
 - name: "create archiving location: {{fah.docker.image.archive.path}}"
   tags:
@@ -154,16 +155,16 @@
     state: directory
     mode: '0755'
 
-- name: "Archive / export dockerimage to: {{fah.docker.image.archive.path}}/{{fah.name}}-{{fah.tag}}.tar"
+- name: "Archive / export dockerimage to: {{fah.docker.image.archive.path}}/{{fah.fullname}}-{{fah.tag}}.tar"
   tags:
     - never
     - archive 
     - archive_only
   docker_image:
-    name: "{{fah.name}}"
+    name: "{{fah.fullname}}"
     source: local  
     tag: "{{fah.tag}}"
-    archive_path: "{{fah.docker.image.archive.path}}/{{fah.name}}-{{fah.tag}}.tar"
+    archive_path: "{{fah.docker.image.archive.path}}/{{fah.fullname}}-{{fah.tag}}.tar"
 
 - name: Remove build folder and its content
   tags:

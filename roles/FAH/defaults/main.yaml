@@ -4,12 +4,13 @@
 _rule:
   name: "fah-brtlvrs"
   version: v7.6.13-deb-volume
-  build: "0.4.1"
+  build: "0.4.2"
   build_path: "{{playbook_dir}}/build"
 
 #-- Configuration parameters  to run, build and/or archive F@H container / image
 fah:
-  name: "{{_rule.name}}.{{_rule.version}}"
+  name: "{{_rule.name}}"
+  fullname: "{{_rule.name}}.{{_rule.version}}"
   tag: "{{_rule.build}}"
   config: #-- settings for the config.xml file of FAHClient
     path: "{{_rule.build_path}}/{{_rule.name}}/config.xml"

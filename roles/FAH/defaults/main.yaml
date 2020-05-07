@@ -3,8 +3,8 @@
 #-- some 'global rule variables'
 _rule:
   name: "fah-brtlvrs"
-  version: v7.6.9-deb-volume
-  build: "0.4.0"
+  version: v7.6.13-deb-volume
+  build: "0.4.1"
   build_path: "{{playbook_dir}}/build"
 
 #-- Configuration parameters  to run, build and/or archive F@H container / image

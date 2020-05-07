@@ -36,6 +36,9 @@ fah:
       web_port: "7396" #"7396"  #-- default for Folding@Home client FAHClient 7396
       cpu:
         shares: "768" #-- default is 1024
+      mem:
+        memory: "765M"  #- max amount of memory to use (rest is swap)
+        memory_swap: "2G" #-- total ammount of memory
 
 help:
     tags_explenation:

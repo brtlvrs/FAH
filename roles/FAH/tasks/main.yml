@@ -133,6 +133,8 @@
     state: started
     cleanup: yes
     cpu_shares: "{{fah.docker.container.cpu.shares}}"
+    memory: "{{fah.docker.container.mem.memory}}"
+    memory_swap:  "{{fah.docker.container.mem.memory_swap}}"
 #    networks: 
 #      - name: bridge
     ports: 

@@ -89,7 +89,7 @@
   tags:
     - build
     - run
-    - archivve
+    - archive
   file:
     path:  "{{fah.docker.image.build.path}}/config.xml"
     state: touch

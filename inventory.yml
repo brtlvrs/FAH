@@ -1,4 +1,0 @@
-All:
-  hosts:
-    photon-01:
-      ansible_connection: local

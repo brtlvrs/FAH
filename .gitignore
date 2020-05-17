@@ -1,3 +1,4 @@
 /archive/*
 /build/.*
 .vault-password.txt
+.inventory.yml

@@ -89,7 +89,7 @@
     - never
     - dockerhub
   file:
-    path: "{{fah.dockerhub.dockerfile.path}}"
+    path: "{{lookup('env','pathonhost')}}/dockerhub"
     state: directory
     mode: '0755'
 
@@ -98,7 +98,7 @@
     - never
     - dockerhub
   file:
-    path:  "{{fah.dockerhub.dockerfile.path}}/{{item}}"
+    path:  "{{lookup('env','pathonhost')}}/dockerhub/{{item}}"
     state: touch
   loop:
     - dockerfile
@@ -110,7 +110,7 @@
     - dockerhub
   template:
     src: "{{item}}.j2"
-    dest: "{{fah.dockerhub.dockerfile.path}}/{{item}}"
+    dest: "{{lookup('env','pathonhost')}}/dockerhub/{{item}}"
   loop:
     - dockerfile
     - config.xml

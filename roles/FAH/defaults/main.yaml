@@ -8,6 +8,7 @@ _rule:
   build_path: "{{playbook_dir}}/build"
   rootLocation: "/mnt/synotabitha/ansible/FAH"
 
+
 #-- Configuration parameters  to run, build and/or archive F@H container / image
 fah:
   name: "{{_rule.name}}"

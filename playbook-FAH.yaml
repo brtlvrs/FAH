@@ -1,5 +1,5 @@
 ---
-- hosts: photon-01
+- hosts: builder
   gather_facts: yes
   become: true
   roles:

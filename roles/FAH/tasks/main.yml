@@ -13,6 +13,8 @@
     var: "{{ item }}"
     verbosity: 1
   loop:
+  - _rule
+  - gv
   - fah
 
 - name: "find Folding@Home container: {{fah.fullname}}"
@@ -72,7 +74,6 @@
     tag: "{{fah.tag}}" 
     state: absent
 
-
 - name: check build folder
   tags:
     - never
@@ -84,7 +85,6 @@
     state: directory
     mode: '0755'
 
-
 - name: bugfix 'invalid selinux context' - create config.xml
   tags:
     - build
@@ -94,14 +94,25 @@
     path:  "{{fah.docker.image.build.path}}/config.xml"
     state: touch
 
-- name: templating build content
+- name: check dockerhub folder
+  tags:
+    - never
+    - build
+    - run 
+    - archive
+  file:
+    path: "{{ lookup('env','pathonhost') }}/dockerhub"
+    state: directory
+    mode: '0755'
+
+- name: templating dockerhub folder
   tags:
     - Archive
     - build
     - run
   template:
     src: "{{item}}.j2"
-    dest: "{{fah.docker.image.build.path}}/{{item}}"
+    dest:  "{{ lookup('env','pathonhost') }}/dockerhub/{{item}}"
   loop:
     - config.xml
     - dockerfile

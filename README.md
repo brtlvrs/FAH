@@ -17,6 +17,7 @@ To get some experience with Ansible, git, docker while helping a great intiative
 
 |version|FAH<br>version|History|
 |---|---|---|
+|0.4.3|7.6.13|Adding dockerhub intergration|
 |0.4.2|7.6.13|mapped F@H work folder to static docker volume,making possible to keeping FAH work while upgrade FAH version
 |0.4.1|7.6.13|Updated F@H to v 7.6.13<br>added memory limitations
 |0.4|7.6.9|Updated to F@H v 7.6.9|
@@ -116,6 +117,4 @@ ansible-playbook playbook-FAH.yaml --tags help
 ## Todo
 
 - more documentation
-- testing other container OSes
-  - photonOS
-  - Alpine
+- automating dockerhub

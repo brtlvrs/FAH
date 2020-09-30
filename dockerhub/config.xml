@@ -1,0 +1,27 @@
+<config>
+
+  <!-- See sample config: /usr/share/doc/fahclient/sample-config.xml -->
+
+  <!-- Client Control 
+       Don't fold anonymously, provide user info. -->
+  <fold-anon v='false'/>
+
+  <!-- Folding Slot Configuration -->
+  <gpu v='false'/>  <!-- If true, attempt to autoconfigure GPUs -->
+  <smp v='true'/>
+
+  <!-- Slot Control
+       Options: light, medium or full
+       Watch out for high load -->
+  <power v='medium'/>
+
+  <!-- User Information -->
+  <user v='brtlvrs'/>
+  <passkey v='7ce465c5bcaf2e327ce465c5bcaf2e32'/>
+  <team v='246361'/>
+  <allow v='127.0.0.1 0.0.0.0/0'/>
+  <web-allow v='127.0.0.1 0.0.0.0/0'/>
+  <command-allow-no-pass v='127.0.0.1 0.0.0.0/0'/>
+
+
+</config>

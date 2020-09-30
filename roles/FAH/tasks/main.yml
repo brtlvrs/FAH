@@ -84,12 +84,43 @@
     state: directory
     mode: '0755'
 
+- name: check dockerhub folder
+  tags:
+    - never
+    - dockerhub
+  file:
+    path: "{{lookup('env','pathonhost')}}/dockerhub"
+    state: directory
+    mode: '0755'
+
+- name: bugfix 'invalid selinux context' - for dockerhub files
+  tags:
+    - never
+    - dockerhub
+  file:
+    path:  "{{lookup('env','pathonhost')}}/dockerhub/{{item}}"
+    state: touch
+  loop:
+    - dockerfile
+    - config.xml
+
+- name: templating dockerfile for dockerhub
+  tags:
+    - never
+    - dockerhub
+  template:
+    src: "{{item}}.j2"
+    dest: "{{lookup('env','pathonhost')}}/dockerhub/{{item}}"
+  loop:
+    - dockerfile
+    - config.xml
 
 - name: bugfix 'invalid selinux context' - create config.xml
   tags:
+    - never
     - build
     - run
-    - archivve
+    - archive
   file:
     path:  "{{fah.docker.image.build.path}}/config.xml"
     state: touch

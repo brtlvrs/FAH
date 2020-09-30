@@ -6,6 +6,7 @@ _rule:
   version: v7.6.13-deb-volume
   build: "0.4.2"
   build_path: "{{playbook_dir}}/build"
+  rootLocation: "/mnt/synotabitha/ansible/FAH"
 
 #-- Configuration parameters  to run, build and/or archive F@H container / image
 fah:
@@ -24,13 +25,16 @@ fah:
     web_allow: "0.0.0.0/0"
     command_allow_no_pass: "0.0.0.0/0"
     smp: "true"
+  dockerhub:
+    dockerfile:
+      path: "{{_rule.rootLocation}}/dockerhub"
   docker: #-- settings for the docker commands
     image: #-- docker build settings
       dockerfile: "{{_rule.build_path}}"
       build:
         path: "{{playbook_dir}}/build" #--path to place dockerfile and build image from
       archive:
-        path: "{{playbook_dir}}/archive/{{_rule.name}}" #-- path to archive image
+        path: "{{_rule.rootLocation}}/archive/{{_rule.name}}" #-- path to archive image
     container: #-- docker run settings
       ipv4: "{{ansible_eth0.ipv4.address}}" #-- this is the ipv4 address of the host where docker is running
       control_port: "36330" #"36330" #-- default for Folding@Home client FAHClient is 36330

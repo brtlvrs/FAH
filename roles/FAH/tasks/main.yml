@@ -12,8 +12,11 @@
   debug:
     var: "{{ item }}"
     verbosity: 1
-  loop:
+  loop:  
+  - ansible_facts
+  - _rule
   - fah
+
 
 - name: "find Folding@Home container: {{fah.fullname}}"
   #-- Check if Folding@Home container exists
@@ -72,7 +75,6 @@
     tag: "{{fah.tag}}" 
     state: absent
 
-
 - name: check build folder
   tags:
     - never
@@ -84,12 +86,12 @@
     state: directory
     mode: '0755'
 
-- name: check dockerhub folder
+- name: "check dockerhub folder {{fah.dockerhub.path}}"
   tags:
     - never
     - dockerhub
   file:
-    path: "{{lookup('env','pathonhost')}}/dockerhub"
+    path: "{fah.dockerhub.path}}"
     state: directory
     mode: '0755'
 
@@ -98,7 +100,7 @@
     - never
     - dockerhub
   file:
-    path:  "{{lookup('env','pathonhost')}}/dockerhub/{{item}}"
+    path:  "{{fah.dockerhub.path}}/{{item}}"
     state: touch
   loop:
     - dockerfile
@@ -110,7 +112,7 @@
     - dockerhub
   template:
     src: "{{item}}.j2"
-    dest: "{{lookup('env','pathonhost')}}/dockerhub/{{item}}"
+    dest: "{{fah.dockerhub.path}}/{{item}}"
   loop:
     - dockerfile
     - config.xml
@@ -125,14 +127,25 @@
     path:  "{{fah.docker.image.build.path}}/config.xml"
     state: touch
 
-- name: templating build content
+- name: check dockerhub folder
+  tags:
+    - never
+    - build
+    - run 
+    - archive
+  file:
+    path: "{{ lookup('env','pathonhost') }}/dockerhub"
+    state: directory
+    mode: '0755'
+
+- name: templating dockerhub folder
   tags:
     - Archive
     - build
     - run
   template:
     src: "{{item}}.j2"
-    dest: "{{fah.docker.image.build.path}}/{{item}}"
+    dest:  "{{ lookup('env','pathonhost') }}/dockerhub/{{item}}"
   loop:
     - config.xml
     - dockerfile

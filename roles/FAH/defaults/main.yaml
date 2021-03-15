@@ -3,8 +3,8 @@
 #-- some 'global rule variables'
 _rule:
   name: "fah-brtlvrs"
-  version: v7.6.13-deb-volume
-  build: "0.4.2"
+  version: v7.6.21-deb-volume
+  build: "0.4.4"
   build_path: "{{playbook_dir}}/build"
   rootLocation: "/mnt/synotabitha/ansible/FAH"
 

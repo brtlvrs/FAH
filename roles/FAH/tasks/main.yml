@@ -12,8 +12,11 @@
   debug:
     var: "{{ item }}"
     verbosity: 1
-  loop:
+  loop:  
+  - ansible_facts
+  - _rule
   - fah
+
 
 - name: "find Folding@Home container: {{fah.fullname}}"
   #-- Check if Folding@Home container exists
@@ -84,12 +87,12 @@
     state: directory
     mode: '0755'
 
-- name: check dockerhub folder
+- name: "check dockerhub folder {{fah.dockerhub.path}}"
   tags:
     - never
     - dockerhub
   file:
-    path: "{{lookup('env','pathonhost')}}/dockerhub"
+    path: "{fah.dockerhub.path}}"
     state: directory
     mode: '0755'
 
@@ -98,7 +101,7 @@
     - never
     - dockerhub
   file:
-    path:  "{{lookup('env','pathonhost')}}/dockerhub/{{item}}"
+    path:  "{{fah.dockerhub.path}}/{{item}}"
     state: touch
   loop:
     - dockerfile
@@ -110,7 +113,7 @@
     - dockerhub
   template:
     src: "{{item}}.j2"
-    dest: "{{lookup('env','pathonhost')}}/dockerhub/{{item}}"
+    dest: "{{fah.dockerhub.path}}/{{item}}"
   loop:
     - dockerfile
     - config.xml

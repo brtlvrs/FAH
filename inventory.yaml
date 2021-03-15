@@ -1,4 +1,5 @@
 All:
+
     hosts:
       builder:
         ansible_connection: ssh

@@ -9,6 +9,7 @@ _rule:
   build_path: "/tmp/"
   rootLocation: "/data/projects/FAH-devel"
 
+
 #-- Configuration parameters  to run, build and/or archive F@H container / image
 fah:
   name: "{{_rule.name}}"

@@ -12,10 +12,11 @@
   debug:
     var: "{{ item }}"
     verbosity: 1
-  loop:
+  loop:  
+  - ansible_facts
   - _rule
-  - gv
   - fah
+
 
 - name: "find Folding@Home container: {{fah.fullname}}"
   #-- Check if Folding@Home container exists
@@ -85,11 +86,43 @@
     state: directory
     mode: '0755'
 
+- name: "check dockerhub folder {{fah.dockerhub.path}}"
+  tags:
+    - never
+    - dockerhub
+  file:
+    path: "{fah.dockerhub.path}}"
+    state: directory
+    mode: '0755'
+
+- name: bugfix 'invalid selinux context' - for dockerhub files
+  tags:
+    - never
+    - dockerhub
+  file:
+    path:  "{{fah.dockerhub.path}}/{{item}}"
+    state: touch
+  loop:
+    - dockerfile
+    - config.xml
+
+- name: templating dockerfile for dockerhub
+  tags:
+    - never
+    - dockerhub
+  template:
+    src: "{{item}}.j2"
+    dest: "{{fah.dockerhub.path}}/{{item}}"
+  loop:
+    - dockerfile
+    - config.xml
+
 - name: bugfix 'invalid selinux context' - create config.xml
   tags:
+    - never
     - build
     - run
-    - archivve
+    - archive
   file:
     path:  "{{fah.docker.image.build.path}}/config.xml"
     state: touch

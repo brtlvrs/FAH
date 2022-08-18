@@ -1,7 +1,0 @@
-All:
-
-    hosts:
-      builder:
-        ansible_connection: ssh
-        ansible_host: 192.168.117.238
-        ansible_user: root

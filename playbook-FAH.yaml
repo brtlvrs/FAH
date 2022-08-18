@@ -1,7 +1,0 @@
----
-- hosts: builder
-  gather_facts: yes
-  become: true
-  roles:
-    - role: FAH
-    
